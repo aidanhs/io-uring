@@ -7,7 +7,7 @@
 )]
 #![allow(clippy::unreadable_literal, clippy::missing_safety_doc)]
 
-use libc::*;
+use core::ffi::{c_int, c_long, c_uint, c_void};
 
 #[cfg(all(feature = "bindgen", not(feature = "overwrite")))]
 include!(concat!(env!("OUT_DIR"), "/sys.rs"));
@@ -84,7 +84,7 @@ pub unsafe fn io_uring_enter(
     to_submit: c_uint,
     min_complete: c_uint,
     flags: c_uint,
-    arg: *const libc::c_void,
+    arg: *const c_void,
     size: usize,
 ) -> c_int {
     syscall(
@@ -104,7 +104,7 @@ pub unsafe fn io_uring_enter(
     to_submit: c_uint,
     min_complete: c_uint,
     flags: c_uint,
-    arg: *const libc::c_void,
+    arg: *const c_void,
     size: usize,
 ) -> c_int {
     sc::syscall6(

@@ -1,12 +1,11 @@
-use core::ptr;
+use core::{ffi, ptr};
 use core::sync::atomic;
 
-use rustix::fd::AsRawFd;
 use rustix::io;
 
 /// A region of memory mapped using `mmap(2)`.
 pub struct Mmap {
-    addr: ptr::NonNull<libc::c_void>,
+    addr: ptr::NonNull<ffi::c_void>,
     len: usize,
 }
 
@@ -39,13 +38,13 @@ impl Mmap {
 
     /// Get a pointer to the memory.
     #[inline]
-    pub fn as_mut_ptr(&self) -> *mut libc::c_void {
+    pub fn as_mut_ptr(&self) -> *mut ffi::c_void {
         self.addr.as_ptr()
     }
 
     /// Get a pointer to the data at the given offset.
     #[inline]
-    pub unsafe fn offset(&self, offset: u32) -> *mut libc::c_void {
+    pub unsafe fn offset(&self, offset: u32) -> *mut ffi::c_void {
         self.as_mut_ptr().add(offset as usize)
     }
 }
@@ -53,7 +52,7 @@ impl Mmap {
 impl Drop for Mmap {
     fn drop(&mut self) {
         unsafe {
-            libc::munmap(self.addr.as_ptr(), self.len);
+            let _ = rustix::mm::munmap(self.addr.as_ptr(), self.len);
         }
     }
 }

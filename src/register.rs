@@ -1,6 +1,6 @@
 //! Some register syscall related types or parameters.
 
-use core::{fmt, mem, ptr};
+use core::{ffi, fmt, mem, ptr};
 
 use crate::sys;
 
@@ -9,9 +9,9 @@ use rustix::io;
 
 pub(crate) fn execute(
     fd: RawFd,
-    opcode: libc::c_uint,
-    arg: *const libc::c_void,
-    len: libc::c_uint,
+    opcode: ffi::c_uint,
+    arg: *const ffi::c_void,
+    len: ffi::c_uint,
 ) -> io::Result<i32> {
     unsafe {
         let ret = sys::io_uring_register(fd, opcode, arg, len);

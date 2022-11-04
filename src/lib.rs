@@ -4,6 +4,7 @@
 //! For more detailed documentation, see manpage.
 #![warn(rust_2018_idioms, unused_qualifications)]
 #![feature(error_in_core)]
+#![no_std]
 
 extern crate alloc;
 
