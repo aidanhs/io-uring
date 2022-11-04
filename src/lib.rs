@@ -6,8 +6,6 @@
 #![feature(error_in_core)]
 #![no_std]
 
-extern crate alloc;
-
 #[macro_use]
 mod util;
 pub mod cqueue;
@@ -27,7 +25,7 @@ use std::os::unix::io::{AsFd, BorrowedFd};
 
 pub use cqueue::CompletionQueue;
 use cqueue::Sealed as _;
-pub use register::Probe;
+//pub use register::Probe;
 use squeue::Sealed as _;
 pub use squeue::SubmissionQueue;
 pub use submit::Submitter;

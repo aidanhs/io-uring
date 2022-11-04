@@ -1,6 +1,6 @@
 //! Some register syscall related types or parameters.
 
-use core::{ffi, fmt, mem, ptr};
+use core::{ffi, /*fmt, mem, ptr*/};
 
 use crate::sys;
 
@@ -23,93 +23,93 @@ pub(crate) fn execute(
     }
 }
 
-/// Information about what `io_uring` features the kernel supports.
-///
-/// You can fill this in with [`register_probe`](crate::Submitter::register_probe).
-pub struct Probe(ptr::NonNull<sys::io_uring_probe>);
-
-impl Probe {
-    pub(crate) const COUNT: usize = 256;
-    pub(crate) const SIZE: usize = mem::size_of::<sys::io_uring_probe>()
-        + Self::COUNT * mem::size_of::<sys::io_uring_probe_op>();
-
-    /// Create a new probe with no features enabled.
-    #[allow(clippy::cast_ptr_alignment)]
-    pub fn new() -> Probe {
-        use alloc::alloc::{alloc_zeroed, Layout};
-
-        let probe_align = Layout::new::<sys::io_uring_probe>().align();
-        let ptr = unsafe {
-            let probe_layout = Layout::from_size_align_unchecked(Probe::SIZE, probe_align);
-            alloc_zeroed(probe_layout)
-        };
-
-        ptr::NonNull::new(ptr)
-            .map(ptr::NonNull::cast)
-            .map(Probe)
-            .expect("Probe alloc failed!")
-    }
-
-    #[inline]
-    pub(crate) fn as_mut_ptr(&mut self) -> *mut sys::io_uring_probe {
-        self.0.as_ptr()
-    }
-
-    /// Get whether a specific opcode is supported.
-    pub fn is_supported(&self, opcode: u8) -> bool {
-        unsafe {
-            let probe = &*self.0.as_ptr();
-
-            if opcode <= probe.last_op {
-                let ops = probe.ops.as_slice(Self::COUNT);
-                ops[opcode as usize].flags & (sys::IO_URING_OP_SUPPORTED as u16) != 0
-            } else {
-                false
-            }
-        }
-    }
-}
-
-impl Default for Probe {
-    #[inline]
-    fn default() -> Probe {
-        Probe::new()
-    }
-}
-
-impl fmt::Debug for Probe {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        struct Op(sys::io_uring_probe_op);
-
-        impl fmt::Debug for Op {
-            #[inline]
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                f.debug_struct("Op").field("code", &self.0.op).finish()
-            }
-        }
-
-        let probe = unsafe { &*self.0.as_ptr() };
-        let list = unsafe { probe.ops.as_slice(probe.last_op as usize + 1) };
-        let list = list
-            .iter()
-            .filter(|op| op.flags & (sys::IO_URING_OP_SUPPORTED as u16) != 0)
-            .map(|&op| Op(op));
-
-        f.debug_set().entries(list).finish()
-    }
-}
-
-impl Drop for Probe {
-    fn drop(&mut self) {
-        use alloc::alloc::{dealloc, Layout};
-
-        let probe_align = Layout::new::<sys::io_uring_probe>().align();
-        unsafe {
-            let probe_layout = Layout::from_size_align_unchecked(Probe::SIZE, probe_align);
-            dealloc(self.0.as_ptr() as *mut _, probe_layout);
-        }
-    }
-}
+///// Information about what `io_uring` features the kernel supports.
+/////
+///// You can fill this in with [`register_probe`](crate::Submitter::register_probe).
+//pub struct Probe(ptr::NonNull<sys::io_uring_probe>);
+//
+//impl Probe {
+//    pub(crate) const COUNT: usize = 256;
+//    pub(crate) const SIZE: usize = mem::size_of::<sys::io_uring_probe>()
+//        + Self::COUNT * mem::size_of::<sys::io_uring_probe_op>();
+//
+//    /// Create a new probe with no features enabled.
+//    #[allow(clippy::cast_ptr_alignment)]
+//    pub fn new() -> Probe {
+//        use alloc::alloc::{alloc_zeroed, Layout};
+//
+//        let probe_align = Layout::new::<sys::io_uring_probe>().align();
+//        let ptr = unsafe {
+//            let probe_layout = Layout::from_size_align_unchecked(Probe::SIZE, probe_align);
+//            alloc_zeroed(probe_layout)
+//        };
+//
+//        ptr::NonNull::new(ptr)
+//            .map(ptr::NonNull::cast)
+//            .map(Probe)
+//            .expect("Probe alloc failed!")
+//    }
+//
+//    #[inline]
+//    pub(crate) fn as_mut_ptr(&mut self) -> *mut sys::io_uring_probe {
+//        self.0.as_ptr()
+//    }
+//
+//    /// Get whether a specific opcode is supported.
+//    pub fn is_supported(&self, opcode: u8) -> bool {
+//        unsafe {
+//            let probe = &*self.0.as_ptr();
+//
+//            if opcode <= probe.last_op {
+//                let ops = probe.ops.as_slice(Self::COUNT);
+//                ops[opcode as usize].flags & (sys::IO_URING_OP_SUPPORTED as u16) != 0
+//            } else {
+//                false
+//            }
+//        }
+//    }
+//}
+//
+//impl Default for Probe {
+//    #[inline]
+//    fn default() -> Probe {
+//        Probe::new()
+//    }
+//}
+//
+//impl fmt::Debug for Probe {
+//    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+//        struct Op(sys::io_uring_probe_op);
+//
+//        impl fmt::Debug for Op {
+//            #[inline]
+//            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+//                f.debug_struct("Op").field("code", &self.0.op).finish()
+//            }
+//        }
+//
+//        let probe = unsafe { &*self.0.as_ptr() };
+//        let list = unsafe { probe.ops.as_slice(probe.last_op as usize + 1) };
+//        let list = list
+//            .iter()
+//            .filter(|op| op.flags & (sys::IO_URING_OP_SUPPORTED as u16) != 0)
+//            .map(|&op| Op(op));
+//
+//        f.debug_set().entries(list).finish()
+//    }
+//}
+//
+//impl Drop for Probe {
+//    fn drop(&mut self) {
+//        use alloc::alloc::{dealloc, Layout};
+//
+//        let probe_align = Layout::new::<sys::io_uring_probe>().align();
+//        unsafe {
+//            let probe_layout = Layout::from_size_align_unchecked(Probe::SIZE, probe_align);
+//            dealloc(self.0.as_ptr() as *mut _, probe_layout);
+//        }
+//    }
+//}
 
 /// An allowed feature of io_uring. You can set the allowed features with
 /// [`register_restrictions`](crate::Submitter::register_restrictions).

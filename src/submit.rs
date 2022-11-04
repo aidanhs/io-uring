@@ -1,7 +1,7 @@
 use core::ptr;
 use core::sync::atomic;
 
-use crate::register::{execute, Probe};
+use crate::register::{execute, /*Probe*/};
 use crate::sys;
 use crate::util::{cast_ptr, OwnedFd};
 use crate::Parameters;
@@ -283,34 +283,34 @@ impl<'a> Submitter<'a> {
         .map(drop)
     }
 
-    /// Fill in the given [`Probe`] with information about the opcodes supported by io_uring on the
-    /// running kernel.
-    ///
-    /// # Examples
-    ///
-    // This is marked no_run as it is only available from Linux 5.6+, however the latest Ubuntu (on
-    // which CI runs) only has Linux 5.4.
-    /// ```no_run
-    /// # fn main() -> Result<(), Box<dyn core::error::Error>> {
-    /// let io_uring = io_uring::IoUring::new(1)?;
-    /// let mut probe = io_uring::Probe::new();
-    /// io_uring.submitter().register_probe(&mut probe)?;
-    ///
-    /// if probe.is_supported(io_uring::opcode::Read::CODE) {
-    ///     println!("Reading is supported!");
-    /// }
-    /// # Ok(())
-    /// # }
-    /// ```
-    pub fn register_probe(&self, probe: &mut Probe) -> io::Result<()> {
-        execute(
-            self.fd.as_raw_fd(),
-            sys::IORING_REGISTER_PROBE,
-            probe.as_mut_ptr() as *const _,
-            Probe::COUNT as _,
-        )
-        .map(drop)
-    }
+    ///// Fill in the given [`Probe`] with information about the opcodes supported by io_uring on the
+    ///// running kernel.
+    /////
+    ///// # Examples
+    /////
+    //// This is marked no_run as it is only available from Linux 5.6+, however the latest Ubuntu (on
+    //// which CI runs) only has Linux 5.4.
+    ///// ```no_run
+    ///// # fn main() -> Result<(), Box<dyn core::error::Error>> {
+    ///// let io_uring = io_uring::IoUring::new(1)?;
+    ///// let mut probe = io_uring::Probe::new();
+    ///// io_uring.submitter().register_probe(&mut probe)?;
+    /////
+    ///// if probe.is_supported(io_uring::opcode::Read::CODE) {
+    /////     println!("Reading is supported!");
+    ///// }
+    ///// # Ok(())
+    ///// # }
+    ///// ```
+    //pub fn register_probe(&self, probe: &mut Probe) -> io::Result<()> {
+    //    execute(
+    //        self.fd.as_raw_fd(),
+    //        sys::IORING_REGISTER_PROBE,
+    //        probe.as_mut_ptr() as *const _,
+    //        Probe::COUNT as _,
+    //    )
+    //    .map(drop)
+    //}
 
     /// Register credentials of the running application with io_uring, and get an id associated with
     /// these credentials. This ID can then be [passed](crate::squeue::Entry::personality) into
