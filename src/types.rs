@@ -2,7 +2,7 @@
 
 pub(crate) mod sealed {
     use super::{Fd, Fixed};
-    use std::os::unix::io::RawFd;
+    use rustix::fd::RawFd;
 
     #[derive(Debug)]
     pub enum Target {
@@ -41,8 +41,9 @@ pub(crate) mod sealed {
 }
 
 use crate::sys;
+
 use bitflags::bitflags;
-use std::os::unix::io::RawFd;
+use rustix::fd::RawFd;
 
 #[cfg(feature = "unstable")]
 use core::marker::PhantomData;

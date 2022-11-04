@@ -1,6 +1,5 @@
 use core::ptr;
 use core::sync::atomic;
-use std::io;
 
 use crate::register::{execute, Probe};
 use crate::sys;
@@ -14,6 +13,7 @@ use crate::register::Restriction;
 use crate::types;
 
 use rustix::fd::{AsRawFd, RawFd};
+use rustix::io;
 
 /// Interface for submitting submission queue events in an io_uring instance to the kernel for
 /// executing and registering files or buffers with the instance.
@@ -105,10 +105,8 @@ impl<'a> Submitter<'a> {
         );
         if result >= 0 {
             Ok(result as _)
-        } else if result == -1 {
-            Err(io::Error::last_os_error())
         } else {
-            Err(io::Error::from_raw_os_error(-result))
+            Err(io::Errno::from_raw_os_error(result))
         }
     }
 

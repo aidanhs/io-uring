@@ -1,11 +1,11 @@
 //! Some register syscall related types or parameters.
 
 use core::{fmt, mem, ptr};
-use std::io;
 
 use crate::sys;
 
 use rustix::fd::RawFd;
+use rustix::io;
 
 pub(crate) fn execute(
     fd: RawFd,
@@ -18,7 +18,7 @@ pub(crate) fn execute(
         if ret >= 0 {
             Ok(ret)
         } else {
-            Err(io::Error::last_os_error())
+            Err(io::Errno::from_raw_os_error(ret))
         }
     }
 }
@@ -101,7 +101,7 @@ impl fmt::Debug for Probe {
 
 impl Drop for Probe {
     fn drop(&mut self) {
-        use std::alloc::{dealloc, Layout};
+        use alloc::alloc::{dealloc, Layout};
 
         let probe_align = Layout::new::<sys::io_uring_probe>().align();
         unsafe {
@@ -123,7 +123,7 @@ pub struct Restriction(sys::io_uring_restriction);
 #[cfg(feature = "unstable")]
 #[inline(always)]
 fn res_zeroed() -> sys::io_uring_restriction {
-    unsafe { std::mem::zeroed() }
+    unsafe { core::mem::zeroed() }
 }
 
 #[cfg(feature = "unstable")]

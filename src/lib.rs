@@ -20,7 +20,6 @@ pub mod types;
 use core::marker::PhantomData;
 use core::mem::ManuallyDrop;
 use core::{cmp, mem};
-use std::io;
 
 #[cfg(feature = "io_safety")]
 use std::os::unix::io::{AsFd, BorrowedFd};
@@ -34,6 +33,7 @@ pub use submit::Submitter;
 use util::{Mmap, OwnedFd};
 
 use rustix::fd::{AsRawFd, FromRawFd, RawFd};
+use rustix::io;
 
 /// IoUring instance
 ///
@@ -182,7 +182,7 @@ impl<S: squeue::EntryMarker, C: cqueue::EntryMarker> IoUring<S, C> {
             if fd >= 0 {
                 OwnedFd::from_raw_fd(fd)
             } else {
-                return Err(io::Error::last_os_error());
+                return Err(io::Errno::from_raw_os_error(fd))
             }
         };
 
