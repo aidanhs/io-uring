@@ -1,6 +1,7 @@
+use core::ptr;
+use core::sync::atomic;
+use std::io;
 use std::os::unix::io::AsRawFd;
-use std::sync::atomic;
-use std::{io, ptr};
 
 /// A region of memory mapped using `mmap(2)`.
 pub struct Mmap {
@@ -68,7 +69,7 @@ mod fd {
 
 #[cfg(not(feature = "io_safety"))]
 mod fd {
-    use std::mem;
+    use core::mem;
     use std::os::unix::io::{AsRawFd, FromRawFd, IntoRawFd, RawFd};
 
     /// API-compatible with the `OwnedFd` type in the Rust stdlib.

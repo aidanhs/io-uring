@@ -45,7 +45,7 @@ use bitflags::bitflags;
 use std::os::unix::io::RawFd;
 
 #[cfg(feature = "unstable")]
-use std::marker::PhantomData;
+use core::marker::PhantomData;
 
 #[cfg(feature = "unstable")]
 use crate::util::cast_ptr;
@@ -157,7 +157,7 @@ impl Timespec {
 /// ```compile_fail
 /// use io_uring::types::{ SubmitArgs, Timespec };
 ///
-/// let sigmask: libc::sigset_t = unsafe { std::mem::zeroed() };
+/// let sigmask: libc::sigset_t = unsafe { core::mem::zeroed() };
 ///
 /// let mut args = SubmitArgs::new();
 ///
@@ -198,7 +198,7 @@ impl<'prev, 'now> SubmitArgs<'prev, 'now> {
     #[inline]
     pub fn sigmask<'new>(mut self, sigmask: &'new libc::sigset_t) -> SubmitArgs<'now, 'new> {
         self.args.sigmask = cast_ptr(sigmask) as _;
-        self.args.sigmask_sz = std::mem::size_of::<libc::sigset_t>() as _;
+        self.args.sigmask_sz = core::mem::size_of::<libc::sigset_t>() as _;
 
         SubmitArgs {
             args: self.args,
@@ -264,6 +264,6 @@ impl BufRingEntry {
     /// a valid pointer type, but also the argument must be the address to the first entry
     /// of the buf_ring for the resv field to even be considered the tail field of the ring.
     pub unsafe fn tail(ring_base: *const BufRingEntry) -> *const u16 {
-        std::ptr::addr_of!((*ring_base).0.resv)
+        core::ptr::addr_of!((*ring_base).0.resv)
     }
 }

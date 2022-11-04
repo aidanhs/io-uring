@@ -3,6 +3,9 @@
 //! The crate only provides a summary of the parameters.
 //! For more detailed documentation, see manpage.
 #![warn(rust_2018_idioms, unused_qualifications)]
+#![feature(error_in_core)]
+
+extern crate alloc;
 
 #[macro_use]
 mod util;
@@ -14,10 +17,11 @@ mod submit;
 mod sys;
 pub mod types;
 
-use std::marker::PhantomData;
-use std::mem::ManuallyDrop;
+use core::marker::PhantomData;
+use core::mem::ManuallyDrop;
+use core::{cmp, mem};
 use std::os::unix::io::{AsRawFd, FromRawFd, RawFd};
-use std::{cmp, io, mem};
+use std::io;
 
 #[cfg(feature = "io_safety")]
 use std::os::unix::io::{AsFd, BorrowedFd};
@@ -486,8 +490,8 @@ impl Parameters {
     }
 }
 
-impl std::fmt::Debug for Parameters {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Debug for Parameters {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_struct("Parameters")
             .field("is_setup_sqpoll", &self.is_setup_sqpoll())
             .field("is_setup_iopoll", &self.is_setup_iopoll())

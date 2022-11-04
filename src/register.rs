@@ -1,7 +1,8 @@
 //! Some register syscall related types or parameters.
 
+use core::{fmt, mem, ptr};
 use std::os::unix::io::RawFd;
-use std::{fmt, io, mem, ptr};
+use std::io;
 
 use crate::sys;
 
@@ -34,7 +35,7 @@ impl Probe {
     /// Create a new probe with no features enabled.
     #[allow(clippy::cast_ptr_alignment)]
     pub fn new() -> Probe {
-        use std::alloc::{alloc_zeroed, Layout};
+        use alloc::alloc::{alloc_zeroed, Layout};
 
         let probe_align = Layout::new::<sys::io_uring_probe>().align();
         let ptr = unsafe {

@@ -1,6 +1,7 @@
+use core::ptr;
+use core::sync::atomic;
 use std::os::unix::io::{AsRawFd, RawFd};
-use std::sync::atomic;
-use std::{io, ptr};
+use std::io;
 
 use crate::register::{execute, Probe};
 use crate::sys;
@@ -92,7 +93,7 @@ impl<'a> Submitter<'a> {
         let arg = arg
             .map(|arg| cast_ptr(arg) as *const _)
             .unwrap_or_else(ptr::null);
-        let size = std::mem::size_of::<T>();
+        let size = core::mem::size_of::<T>();
         let result = sys::io_uring_enter(
             self.fd.as_raw_fd(),
             to_submit,
@@ -200,7 +201,7 @@ impl<'a> Submitter<'a> {
     /// Requires the `unstable` feature.
     #[cfg(feature = "unstable")]
     pub fn register_files_sparse(&self, nr: u32) -> io::Result<()> {
-        use std::mem;
+        use core::mem;
         let rr = sys::io_uring_rsrc_register {
             nr,
             flags: sys::IORING_RSRC_REGISTER_SPARSE,
@@ -291,7 +292,7 @@ impl<'a> Submitter<'a> {
     // This is marked no_run as it is only available from Linux 5.6+, however the latest Ubuntu (on
     // which CI runs) only has Linux 5.4.
     /// ```no_run
-    /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// # fn main() -> Result<(), Box<dyn core::error::Error>> {
     /// let io_uring = io_uring::IoUring::new(1)?;
     /// let mut probe = io_uring::Probe::new();
     /// io_uring.submitter().register_probe(&mut probe)?;

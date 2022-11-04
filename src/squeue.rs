@@ -1,9 +1,9 @@
 //! Submission Queue
 
-use std::error::Error;
-use std::fmt::{self, Debug, Display, Formatter};
-use std::mem;
-use std::sync::atomic;
+use core::error::Error;
+use core::fmt::{self, Debug, Display, Formatter};
+use core::mem;
+use core::sync::atomic;
 
 use crate::sys;
 use crate::util::{unsync_load, Mmap};

@@ -1,10 +1,10 @@
 //! Completion Queue
 
-use std::fmt::{self, Debug};
-use std::mem;
+use core::fmt::{self, Debug};
+use core::mem;
 #[cfg(feature = "unstable")]
-use std::mem::MaybeUninit;
-use std::sync::atomic;
+use core::mem::MaybeUninit;
+use core::sync::atomic;
 
 use crate::sys;
 use crate::util::{unsync_load, Mmap};
@@ -153,13 +153,13 @@ impl<E: EntryMarker> CompletionQueue<'_, E> {
     #[cfg(feature = "unstable")]
     #[inline]
     pub fn fill<'a>(&mut self, entries: &'a mut [MaybeUninit<E>]) -> &'a mut [E] {
-        let len = std::cmp::min(self.len(), entries.len());
+        let len = core::cmp::min(self.len(), entries.len());
 
         for entry in &mut entries[..len] {
             *entry = MaybeUninit::new(unsafe { self.pop() });
         }
 
-        unsafe { std::slice::from_raw_parts_mut(entries as *mut _ as *mut E, len) }
+        unsafe { core::slice::from_raw_parts_mut(entries as *mut _ as *mut E, len) }
     }
 
     #[inline]

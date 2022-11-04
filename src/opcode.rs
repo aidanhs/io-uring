@@ -3,8 +3,8 @@
 #![allow(clippy::new_without_default)]
 
 #[cfg(feature = "unstable")]
-use std::convert::TryInto;
-use std::mem;
+use core::convert::TryInto;
+use core::mem;
 use std::os::unix::io::RawFd;
 
 use crate::squeue::Entry;
@@ -100,7 +100,7 @@ macro_rules! opcode {
 /// inline zeroed to improve codegen
 #[inline(always)]
 fn sqe_zeroed() -> sys::io_uring_sqe {
-    unsafe { std::mem::zeroed() }
+    unsafe { core::mem::zeroed() }
 }
 
 opcode!(
