@@ -5,13 +5,14 @@
 #[cfg(feature = "unstable")]
 use core::convert::TryInto;
 use core::mem;
-use std::os::unix::io::RawFd;
 
 use crate::squeue::Entry;
 #[cfg(feature = "unstable")]
 use crate::squeue::Entry128;
 use crate::sys;
 use crate::types::{self, sealed};
+
+use rustix::fd::RawFd;
 
 macro_rules! assign_fd {
     ( $sqe:ident . fd = $opfd:expr ) => {

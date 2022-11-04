@@ -1,6 +1,5 @@
 use core::ptr;
 use core::sync::atomic;
-use std::os::unix::io::{AsRawFd, RawFd};
 use std::io;
 
 use crate::register::{execute, Probe};
@@ -13,6 +12,8 @@ use crate::register::Restriction;
 
 #[cfg(feature = "unstable")]
 use crate::types;
+
+use rustix::fd::{AsRawFd, RawFd};
 
 /// Interface for submitting submission queue events in an io_uring instance to the kernel for
 /// executing and registering files or buffers with the instance.

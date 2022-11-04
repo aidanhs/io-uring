@@ -20,7 +20,6 @@ pub mod types;
 use core::marker::PhantomData;
 use core::mem::ManuallyDrop;
 use core::{cmp, mem};
-use std::os::unix::io::{AsRawFd, FromRawFd, RawFd};
 use std::io;
 
 #[cfg(feature = "io_safety")]
@@ -33,6 +32,8 @@ use squeue::Sealed as _;
 pub use squeue::SubmissionQueue;
 pub use submit::Submitter;
 use util::{Mmap, OwnedFd};
+
+use rustix::fd::{AsRawFd, FromRawFd, RawFd};
 
 /// IoUring instance
 ///

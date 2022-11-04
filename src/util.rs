@@ -1,7 +1,8 @@
 use core::ptr;
 use core::sync::atomic;
 use std::io;
-use std::os::unix::io::AsRawFd;
+
+use rustix::fd::AsRawFd;
 
 /// A region of memory mapped using `mmap(2)`.
 pub struct Mmap {

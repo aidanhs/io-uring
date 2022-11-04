@@ -1,10 +1,11 @@
 //! Some register syscall related types or parameters.
 
 use core::{fmt, mem, ptr};
-use std::os::unix::io::RawFd;
 use std::io;
 
 use crate::sys;
+
+use rustix::fd::RawFd;
 
 pub(crate) fn execute(
     fd: RawFd,
