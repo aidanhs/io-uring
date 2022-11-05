@@ -181,7 +181,7 @@ impl<S: squeue::EntryMarker, C: cqueue::EntryMarker> IoUring<S, C> {
             if fd >= 0 {
                 OwnedFd::from_raw_fd(fd)
             } else {
-                return Err(io::Errno::from_raw_os_error(fd))
+                return Err(io::Errno::from_raw_os_error(-fd))
             }
         };
 

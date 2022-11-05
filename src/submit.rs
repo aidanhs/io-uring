@@ -106,7 +106,7 @@ impl<'a> Submitter<'a> {
         if result >= 0 {
             Ok(result as _)
         } else {
-            Err(io::Errno::from_raw_os_error(result))
+            Err(io::Errno::from_raw_os_error(-result))
         }
     }
 

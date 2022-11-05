@@ -26,7 +26,8 @@ io_safety = []
 bitflags = "1"
 libc = { version = "0.2.98", default-features = false }
 #rustix = { version = "0.35", default-features = false, features = ["mm"] }
-rustix = { git = "https://github.com/aidanhs/rustix.git", rev = "4633c2502", default-features = false, features = ["mm"] }
+#rustix = { git = "https://github.com/aidanhs/rustix.git", rev = "4633c2502", default-features = false, features = ["mm"] }
+rustix = { path = "../rustix", default-features = false, features = ["mm"] }
 sc = { version = "0.2", optional = true }
 
 [build-dependencies]

@@ -18,7 +18,7 @@ pub(crate) fn execute(
         if ret >= 0 {
             Ok(ret)
         } else {
-            Err(io::Errno::from_raw_os_error(ret))
+            Err(io::Errno::from_raw_os_error(-ret))
         }
     }
 }
